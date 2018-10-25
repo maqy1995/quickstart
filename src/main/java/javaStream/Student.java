@@ -12,7 +12,7 @@ public class Student {
         this.school = school;
     }
     /** 学号 */
-    private long id;  //this is a test
+    private long id;  //this is second test
 
     private String name;
 
