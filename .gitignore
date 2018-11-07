@@ -16,3 +16,4 @@ settings.xml
 .gradle
 classes
 out
+*.jar
