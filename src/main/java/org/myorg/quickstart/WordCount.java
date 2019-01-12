@@ -78,11 +78,11 @@ public class WordCount {
 				.flatMap(new LineSplitter())
 				// group by the tuple field "0" and sum up tuple field "1"
 				.groupBy(0)
-				.sum(1);
+				.sum(1).setParallelism(1);
 
 		// execute and print result
-		//counts.writeAsText(output);
-		counts.print();
+		counts.writeAsText(output);
+		//counts.print();
 		//执行程序
 		env.execute("batchJob~~~~~~~~~~~~~");
 

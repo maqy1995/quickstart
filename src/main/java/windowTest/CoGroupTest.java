@@ -67,7 +67,7 @@ public class CoGroupTest {
             public String getKey(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
                 return stringIntegerTuple2.f0;
             }
-        }).window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
+        }).window(TumblingProcessingTimeWindows.of(Time.seconds(10)))
                 .apply(new CoGroupFunction<Tuple2<String,Integer>, Tuple2<String,Integer>, String>() {
                     @Override
                     public void coGroup(Iterable<Tuple2<String, Integer>> iterable, Iterable<Tuple2<String, Integer>> iterable1, Collector<String> collector) throws Exception {

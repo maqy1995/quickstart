@@ -12,6 +12,15 @@ class MyPartition implements Partitioner {
     public int partition(Object key, int numPartitions) {
         if(((String)key).equals("a")){
             return 0;
+        }else
+            return 1;
+    }
+}
+class MyPartition1 implements Partitioner {
+    @Override
+    public int partition(Object key, int numPartitions) {
+        if(((String)key).equals("a")){
+            return 0;
         }else if(((String)key).equals("b") || ((String)key).equals("e")) {
             return 1;
         }else if(((String)key).equals("d")){
@@ -47,10 +56,12 @@ public class MapPartition {
                 }
             }
         });
-        DataSet<Tuple2<String,Integer>> RangeWords = words.partitionByHash(0);
-        //DataSet<Tuple2<String,Integer>> RangeWords1 = words.partitionCustom(new MyPartition(),0);
+        //DataSet<Tuple2<String,Integer>> RangeWords = words.partitionByHash(0);
+        //DataSet<Tuple2<String,Integer>> RangeWords = words.partitionByRange(0);
+        DataSet<Tuple2<String,Integer>> RangeWords = words.partitionCustom(new MyPartition(),0);
         //words.print();
-        RangeWords.first(10).writeAsText(output);
+        DataSet<Tuple2<String,Integer>> counts = RangeWords.groupBy(0).sum(1);
+        counts.writeAsText(output);
         env.execute("this is a hash partition job!!!");
     }
 }
