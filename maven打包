@@ -1,0 +1,4 @@
+注意：profile可以通过-P参数来制定
+例如：
+mvn clean package -P build-jar
+
