@@ -10,23 +10,20 @@ import org.apache.flink.util.Collector;
 class MyPartition implements Partitioner {
     @Override
     public int partition(Object key, int numPartitions) {
-        if(((String)key).equals("a")){
-            return 0;
-        }else
+        if(((String)key).equals("j")){
             return 1;
+        }else
+            return 0;
     }
 }
 class MyPartition1 implements Partitioner {
     @Override
     public int partition(Object key, int numPartitions) {
-        if(((String)key).equals("a")){
+        if(((String)key).equals("a")||((String)key).equals("b")||((String)key).equals("c")||((String)key).equals("d")||((String)key).equals("e")) {
             return 0;
-        }else if(((String)key).equals("b") || ((String)key).equals("e")) {
+        }else{
             return 1;
-        }else if(((String)key).equals("d")){
-            return 2;
-        }else
-            return 3;
+        }
     }
 }
 public class MapPartition {
@@ -44,7 +41,7 @@ public class MapPartition {
 
         //设置并行度
         env.setParallelism(parallelism);
-        DataSet<String> text = env.readTextFile(input);
+        DataSet<String> text = env.readTextFile(input).rebalance();
 
         //DataSet<String> text1=text.rebalance();
         DataSet<Tuple2<String,Integer>> words = text.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
@@ -57,11 +54,11 @@ public class MapPartition {
             }
         });
         //DataSet<Tuple2<String,Integer>> RangeWords = words.partitionByHash(0);
-        //DataSet<Tuple2<String,Integer>> RangeWords = words.partitionByRange(0);
-        DataSet<Tuple2<String,Integer>> RangeWords = words.partitionCustom(new MyPartition(),0);
+        DataSet<Tuple2<String,Integer>> RangeWords = words.partitionByRange(0);
+        //DataSet<Tuple2<String,Integer>> RangeWords = words.partitionCustom(new MyPartition1(),0);
         //words.print();
-        DataSet<Tuple2<String,Integer>> counts = RangeWords.groupBy(0).sum(1);
-        counts.writeAsText(output);
-        env.execute("this is a hash partition job!!!");
+        //DataSet<Tuple2<String,Integer>> counts = RangeWords.groupBy(0).sum(1);
+        RangeWords.writeAsText(output);
+        env.execute("this is a custom partition(abcde) job!!!");
     }
 }
